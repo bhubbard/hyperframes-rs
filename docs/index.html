@@ -1152,6 +1152,26 @@
               <td>TypeScript Vitest suite</td>
             </tr>
             <tr>
+              <td><strong>Clock Seek Latency</strong></td>
+              <td class="cell-highlight"><strong>5.42 ns / seek</strong> (184.4M seeks/s)</td>
+              <td>~15 - 45 ms / frame (&gt;1,000,000× faster)</td>
+            </tr>
+            <tr>
+              <td><strong>Speed Ramp Time Warping</strong></td>
+              <td class="cell-highlight"><strong>31.25 ns / eval</strong> (32.0M evals/s)</td>
+              <td>~1.5 - 4.0 µs / eval (50× - 120× faster)</td>
+            </tr>
+            <tr>
+              <td><strong>Audio Curve Interpolation</strong></td>
+              <td class="cell-highlight"><strong>9.93 ns / sample</strong> (100.7M/s)</td>
+              <td>~120 - 350 ns / sample (12× - 35× faster)</td>
+            </tr>
+            <tr>
+              <td><strong>Color Grading Adjustments</strong></td>
+              <td class="cell-highlight"><strong>1.09 ns / eval</strong> (916M/s)</td>
+              <td>~25 - 60 ns (20× - 55× faster)</td>
+            </tr>
+            <tr>
               <td><strong>Memory Safety</strong></td>
               <td class="cell-highlight">100% Safe Rust 2024 Edition</td>
               <td>V8 Garbage Collected</td>
@@ -1163,6 +1183,9 @@
             </tr>
           </tbody>
         </table>
+        <div style="margin-top: 1.5rem; text-align: right;">
+          <a href="https://github.com/bhubbard/hyperframes-rs/blob/main/BENCHMARKS.md" target="_blank" style="color: var(--color-accent-cobalt); text-decoration: none; font-weight: 600; font-size: 0.85rem;">View Full Benchmarks Report &rarr;</a>
+        </div>
       </div>
     </div>
   </section>
