@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, height=1080, initial-scale=1.0">
+  <title>Brandon Hubbard — 10s Intro</title>
+  <meta name="hyperframes:duration" content="10.0">
+  <meta name="hyperframes:fps" content="30">
+  <meta name="hyperframes:width" content="1920">
+  <meta name="hyperframes:height" content="1080">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: #06070a;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Segoe UI", Roboto, sans-serif;
+      color: #f8fafc;
+      position: relative;
+    }
+
+    #bg-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 1080px;
+      z-index: 1;
+    }
+
+    .vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(6,7,10,0.1) 0%, rgba(6,7,10,0.85) 80%, #06070a 100%);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .grid-overlay {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      background-position: center center;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .scene-container {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transform-origin: center center;
+    }
+
+    /* Common Typography & Accents */
+    .glow-cyan {
+      color: #38bdf8;
+      text-shadow: 0 0 30px rgba(56, 189, 248, 0.5), 0 0 60px rgba(56, 189, 248, 0.2);
+    }
+    .glow-violet {
+      color: #a855f7;
+      text-shadow: 0 0 30px rgba(168, 85, 247, 0.5), 0 0 60px rgba(168, 85, 247, 0.2);
+    }
+    .glow-emerald {
+      color: #10b981;
+      text-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .gradient-cyan-violet {
+      background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* SCENE 1 */
+    #scene1 {
+      gap: 28px;
+    }
+
+    .monogram-box {
+      width: 150px;
+      height: 150px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .monogram-svg {
+      width: 150px;
+      height: 150px;
+      filter: drop-shadow(0 0 35px rgba(56, 189, 248, 0.6));
+    }
+
+    .title-main {
+      font-size: 78px;
+      font-weight: 800;
+      letter-spacing: 12px;
+      text-transform: uppercase;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      backdrop-filter: blur(16px);
+      padding: 12px 32px;
+      border-radius: 9999px;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #94a3b8;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(56, 189, 248, 0.08);
+    }
+
+    .role-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 12px #38bdf8;
+    }
+
+    .pill-container {
+      display: flex;
+      gap: 18px;
+      margin-top: 10px;
+    }
+
+    .tech-pill {
+      font-family: ui-monospace, "SF Mono", "Fira Code", monospace;
+      font-size: 17px;
+      padding: 8px 22px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+    }
+
+    /* SCENE 2: PILLARS */
+    #scene2 {
+      gap: 40px;
+    }
+
+    .scene-header {
+      text-align: center;
+    }
+
+    .scene-kicker {
+      font-family: ui-monospace, "SF Mono", "Fira Code", monospace;
+      font-size: 18px;
+      color: #38bdf8;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .scene-headline {
+      font-size: 52px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    .cards-row {
+      display: flex;
+      gap: 36px;
+      width: 1480px;
+      justify-content: center;
+    }
+
+    .pillar-card {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
+      padding: 40px 36px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pillar-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent, #38bdf8), transparent);
+    }
+
+    .pillar-card-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .pillar-card-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+
+    .pillar-card-desc {
+      font-size: 18px;
+      line-height: 1.55;
+      color: #94a3b8;
+    }
+
+    .pillar-card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: auto;
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 14px;
+      color: #64748b;
+    }
+
+    .pillar-tag {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    /* SCENE 3: METRICS & TERMINAL */
+    #scene3 {
+      gap: 36px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 28px;
+      width: 1480px;
+    }
+
+    .metric-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 32px 28px;
+      backdrop-filter: blur(16px);
+      text-align: center;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .metric-val {
+      font-size: 64px;
+      font-weight: 800;
+      line-height: 1.1;
+      font-family: ui-monospace, "SF Mono", "Fira Code", monospace;
+      margin-bottom: 8px;
+    }
+
+    .metric-lbl {
+      font-size: 17px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 600;
+    }
+
+    .terminal-box {
+      width: 1480px;
+      background: #090d16;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+    }
+
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 18px;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .t-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .t-dot-red { background: #ef4444; }
+    .t-dot-yellow { background: #f59e0b; }
+    .t-dot-green { background: #10b981; }
+
+    .terminal-title {
+      margin-left: 12px;
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 14px;
+      color: #64748b;
+    }
+
+    .terminal-body {
+      padding: 24px 30px;
+      font-family: ui-monospace, "SF Mono", "Fira Code", monospace;
+      font-size: 17px;
+      line-height: 1.7;
+      color: #cbd5e1;
+    }
+
+    /* SCENE 4: SIGNATURE OUTRO */
+    #scene4 {
+      gap: 32px;
+    }
+
+    .outro-badge {
+      width: 130px;
+      height: 130px;
+    }
+
+    .outro-title {
+      font-size: 82px;
+      font-weight: 900;
+      letter-spacing: 10px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .outro-sub {
+      font-size: 24px;
+      color: #94a3b8;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .links-strip {
+      display: flex;
+      gap: 28px;
+      margin-top: 10px;
+    }
+
+    .link-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 12px 28px;
+      border-radius: 14px;
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 18px;
+      color: #e2e8f0;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .link-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 10px #38bdf8;
+    }
+
+    .cli-prompt-box {
+      margin-top: 15px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      padding: 14px 34px;
+      border-radius: 12px;
+      font-family: ui-monospace, "SF Mono", "Fira Code", monospace;
+      font-size: 20px;
+      color: #a855f7;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cli-cursor {
+      display: inline-block;
+      width: 10px;
+      height: 22px;
+      background: #a855f7;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <!-- Canvas Particle & Grid Background -->
+  <canvas id="bg-canvas" width="1920" height="1080"></canvas>
+  <div class="grid-overlay"></div>
+  <div class="vignette"></div>
+
+  <!-- SCENE 1: IDENTITY & HERO (0.0s - 2.5s) -->
+  <div id="scene1" class="scene-container">
+    <div class="monogram-box">
+      <svg class="monogram-svg" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="m-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#38bdf8" />
+            <stop offset="50%" stop-color="#818cf8" />
+            <stop offset="100%" stop-color="#c084fc" />
+          </linearGradient>
+          <filter id="glow-filter">
+            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <!-- Hexagon Frame -->
+        <polygon id="hex-frame" points="60,6 108,33 108,87 60,114 12,87 12,33" 
+                 stroke="url(#m-grad)" stroke-width="4.5" fill="rgba(15,23,42,0.6)" filter="url(#glow-filter)" />
+        <!-- Monogram BH Paths -->
+        <path d="M38 35 V85 M38 35 H54 C62 35 66 39 66 46 C66 53 62 57 54 57 H38 M38 57 H56 C64 57 69 61 69 69 C69 77 64 85 55 85 H38" 
+              stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M82 35 V85 M66 60 H82" 
+              stroke="url(#m-grad)" stroke-width="4.5" stroke-linecap="round" />
+      </svg>
+    </div>
+
+    <h1 class="title-main gradient-text" id="s1-name">Brandon Hubbard</h1>
+
+    <div class="role-badge" id="s1-role">
+      <div class="role-dot"></div>
+      <span>Principal Engineer &bull; Systems Architect</span>
+    </div>
+
+    <div class="pill-container" id="s1-pills">
+      <div class="tech-pill">⚡ High-Performance Rust</div>
+      <div class="tech-pill">🧠 Zero-Token AI Engines</div>
+      <div class="tech-pill">🌐 Cloudflare & Edge Scale</div>
+    </div>
+  </div>
+
+  <!-- SCENE 2: THREE PILLARS (2.5s - 5.0s) -->
+  <div id="scene2" class="scene-container">
+    <div class="scene-header">
+      <div class="scene-kicker">Core Systems Architecture</div>
+      <div class="scene-headline gradient-text">Engineering Pillars &amp; Foundations</div>
+    </div>
+
+    <div class="cards-row">
+      <!-- Pillar 1 -->
+      <div class="pillar-card" style="--accent: #38bdf8;" id="card1">
+        <div class="pillar-card-icon" style="color: #38bdf8;">⚡</div>
+        <div class="pillar-card-title">Compiled Rust Infrastructure</div>
+        <div class="pillar-card-desc">
+          Zero-cost abstractions, microsecond execution pipelines, SIMD-vectorized math, and deterministic cross-platform runtimes.
+        </div>
+        <div class="pillar-card-tags">
+          <span class="pillar-tag">zev-rs</span>
+          <span class="pillar-tag">hyperframes-rs</span>
+          <span class="pillar-tag">apfel-rs</span>
+        </div>
+      </div>
+
+      <!-- Pillar 2 -->
+      <div class="pillar-card" style="--accent: #a855f7;" id="card2">
+        <div class="pillar-card-icon" style="color: #a855f7;">🧠</div>
+        <div class="pillar-card-title">Zero-Token AI &amp; Edge ML</div>
+        <div class="pillar-card-desc">
+          Breakthrough probabilistic calibration, zero-token classification, on-device Apple Silicon CoreML cascades, and Chrome Built-in AI.
+        </div>
+        <div class="pillar-card-tags">
+          <span class="pillar-tag">5.8 µs Latency</span>
+          <span class="pillar-tag">0.0% Order Flip</span>
+          <span class="pillar-tag">Edge Inference</span>
+        </div>
+      </div>
+
+      <!-- Pillar 3 -->
+      <div class="pillar-card" style="--accent: #10b981;" id="card3">
+        <div class="pillar-card-icon" style="color: #10b981;">🌐</div>
+        <div class="pillar-card-title">Distributed Edge Ecosystems</div>
+        <div class="pillar-card-desc">
+          Global low-latency Cloudflare Workers, Durable Objects, D1 SQL meshes, and the modern Astro server-islands framework.
+        </div>
+        <div class="pillar-card-tags">
+          <span class="pillar-tag">The Flare Suite</span>
+          <span class="pillar-tag">Astro Islands</span>
+          <span class="pillar-tag">WASM Micro-runtimes</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 3: OPEN SOURCE IMPACT & VELOCITY (5.0s - 7.5s) -->
+  <div id="scene3" class="scene-container">
+    <div class="scene-header">
+      <div class="scene-kicker">Open Source &amp; Performance</div>
+      <div class="scene-headline gradient-cyan-violet">Velocity Measured in Microseconds</div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card" id="m1">
+        <div class="metric-val glow-cyan" id="m1-val">230+</div>
+        <div class="metric-lbl">Repositories &amp; Crates</div>
+      </div>
+      <div class="metric-card" id="m2">
+        <div class="metric-val glow-emerald" id="m2-val">5.8 µs</div>
+        <div class="metric-lbl">Decision Latency</div>
+      </div>
+      <div class="metric-card" id="m3">
+        <div class="metric-val glow-violet" id="m3-val">100%</div>
+        <div class="metric-lbl">Memory-Safe Native</div>
+      </div>
+      <div class="metric-card" id="m4">
+        <div class="metric-val glow-cyan" id="m4-val">1,582×</div>
+        <div class="metric-lbl">Throughput Speedup</div>
+      </div>
+    </div>
+
+    <!-- Live Compilation Visualizer -->
+    <div class="terminal-box" id="s3-term">
+      <div class="terminal-bar">
+        <span class="t-dot t-dot-red"></span>
+        <span class="t-dot t-dot-yellow"></span>
+        <span class="t-dot t-dot-green"></span>
+        <span class="terminal-title">cargo build --release &mdash; bhubbard-infrastructure</span>
+      </div>
+      <div class="terminal-body" id="term-text">
+        <span style="color:#10b981;">   Compiling</span> zev-rs v0.1.0 (/crates/zev-rs)<br>
+        <span style="color:#10b981;">   Compiling</span> hyperframes-rs v0.1.0 (/crates/hyperframes-rs)<br>
+        <span style="color:#38bdf8;">    Finished</span> release [optimized + lto] target(s) in 0.38s<br>
+        <span style="color:#a855f7;">     Running</span> test benchmark suite: <span style="color:#10b981;">34 passed</span>; 0 failed; 0 ignored; measured 5.82 µs/iter
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENE 4: SIGNATURE & OUTRO (7.5s - 10.0s) -->
+  <div id="scene4" class="scene-container">
+    <div class="monogram-box outro-badge">
+      <svg class="monogram-svg" viewBox="0 0 120 120" fill="none" style="width:130px;height:130px;">
+        <polygon points="60,6 108,33 108,87 60,114 12,87 12,33" 
+                 stroke="url(#m-grad)" stroke-width="4.5" fill="rgba(15,23,42,0.7)" filter="url(#glow-filter)" />
+        <path d="M38 35 V85 M38 35 H54 C62 35 66 39 66 46 C66 53 62 57 54 57 H38 M38 57 H56 C64 57 69 61 69 69 C69 77 64 85 55 85 H38" 
+              stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M82 35 V85 M66 60 H82" 
+              stroke="url(#m-grad)" stroke-width="4.5" stroke-linecap="round" />
+      </svg>
+    </div>
+
+    <h1 class="outro-title gradient-cyan-violet">Brandon Hubbard</h1>
+    <div class="outro-sub">Principal Systems Architect &amp; Software Engineer</div>
+
+    <div class="links-strip" id="s4-links">
+      <div class="link-item">
+        <div class="link-dot"></div>
+        <span>github.com/bhubbard</span>
+      </div>
+      <div class="link-item">
+        <div class="link-dot" style="background:#a855f7;box-shadow:0 0 10px #a855f7;"></div>
+        <span>brandonhubbard.com</span>
+      </div>
+      <div class="link-item">
+        <div class="link-dot" style="background:#10b981;box-shadow:0 0 10px #10b981;"></div>
+        <span>code.brandonhubbard.com</span>
+      </div>
+    </div>
+
+    <div class="cli-prompt-box" id="s4-cli">
+      <span style="color:#64748b;">$</span>
+      <span id="cli-cmd">bhubbard --build-the-future</span>
+      <span class="cli-cursor" id="cli-cur"></span>
+    </div>
+  </div>
+
+  <script>
+    // Canvas Particles Simulation
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Deterministic random generator for reproducible particle animation
+    function mulberry32(a) {
+      return function() {
+        var t = a += 0x6D2B79F5;
+        t = Math.imul(t ^ t >>> 15, t | 1);
+        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      }
+    }
+
+    const rng = mulberry32(42);
+    const NUM_PARTICLES = 140;
+    const particles = [];
+    for (let i = 0; i < NUM_PARTICLES; i++) {
+      particles.push({
+        baseX: rng() * 1920,
+        baseY: rng() * 1080,
+        vx: (rng() - 0.5) * 45,
+        vy: (rng() - 0.5) * 45,
+        radius: 1.2 + rng() * 2.4,
+        hue: rng() > 0.5 ? 195 : 270, // cyan or violet
+        alpha: 0.15 + rng() * 0.55
+      });
+    }
+
+    function drawBackground(t) {
+      ctx.clearRect(0, 0, 1920, 1080);
+
+      // Radial dynamic spotlight
+      const grad = ctx.createRadialGradient(
+        960 + Math.sin(t * 0.8) * 150, 540 + Math.cos(t * 0.7) * 80, 50,
+        960, 540, 1000
+      );
+      grad.addColorStop(0, 'rgba(30, 27, 75, 0.45)');
+      grad.addColorStop(0.5, 'rgba(15, 23, 42, 0.2)');
+      grad.addColorStop(1, 'rgba(6, 7, 10, 0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 1920, 1080);
+
+      // Draw connection lines between near particles
+      for (let i = 0; i < particles.length; i++) {
+        const p1 = particles[i];
+        const x1 = (p1.baseX + p1.vx * t) % 1920;
+        const y1 = (p1.baseY + p1.vy * t) % 1080;
+        const px1 = x1 < 0 ? x1 + 1920 : x1;
+        const py1 = y1 < 0 ? y1 + 1080 : y1;
+
+        // Subtle glowing dot
+        ctx.beginPath();
+        ctx.arc(px1, py1, p1.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${p1.hue}, 90%, 65%, ${p1.alpha})`;
+        ctx.fill();
+
+        for (let j = i + 1; j < Math.min(i + 8, particles.length); j++) {
+          const p2 = particles[j];
+          const x2 = (p2.baseX + p2.vx * t) % 1920;
+          const y2 = (p2.baseY + p2.vy * t) % 1080;
+          const px2 = x2 < 0 ? x2 + 1920 : x2;
+          const py2 = y2 < 0 ? y2 + 1080 : y2;
+
+          const dx = px1 - px2;
+          const dy = py1 - py2;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 180) {
+            ctx.beginPath();
+            ctx.moveTo(px1, py1);
+            ctx.lineTo(px2, py2);
+            ctx.strokeStyle = `rgba(56, 189, 248, ${(1 - dist / 180) * 0.15})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    // Easing Helpers
+    function easeOutCubic(x) {
+      return 1 - Math.pow(1 - x, 3);
+    }
+    function easeInOutCubic(x) {
+      return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+    }
+    function easeOutBack(x) {
+      const c1 = 1.70158;
+      const c3 = c1 + 1;
+      return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+    }
+    function clamp(val, min, max) {
+      return Math.max(min, Math.min(max, val));
+    }
+
+    // Scene DOM Elements
+    const scene1 = document.getElementById('scene1');
+    const scene2 = document.getElementById('scene2');
+    const scene3 = document.getElementById('scene3');
+    const scene4 = document.getElementById('scene4');
+
+    const s1Name = document.getElementById('s1-name');
+    const s1Role = document.getElementById('s1-role');
+    const s1Pills = document.getElementById('s1-pills');
+
+    const card1 = document.getElementById('card1');
+    const card2 = document.getElementById('card2');
+    const card3 = document.getElementById('card3');
+
+    const m1 = document.getElementById('m1');
+    const m2 = document.getElementById('m2');
+    const m3 = document.getElementById('m3');
+    const m4 = document.getElementById('m4');
+    const s3Term = document.getElementById('s3-term');
+
+    const s4Links = document.getElementById('s4-links');
+    const cliCmd = document.getElementById('cli-cmd');
+    const cliCur = document.getElementById('cli-cur');
+
+    // Main render function called by hyperframes-rs seek()
+    function renderFrame(timeSeconds) {
+      drawBackground(timeSeconds);
+
+      // ==========================================
+      // SCENE 1: (0.0s -> 2.5s)
+      // ==========================================
+      if (timeSeconds < 2.6) {
+        let opacity = 0;
+        let scale = 0.92;
+        let translateY = 20;
+
+        if (timeSeconds < 0.5) {
+          const p = easeOutCubic(timeSeconds / 0.5);
+          opacity = p;
+          scale = 0.92 + 0.08 * p;
+          translateY = 20 * (1 - p);
+        } else if (timeSeconds <= 2.2) {
+          opacity = 1;
+          scale = 1.0;
+          translateY = 0;
+        } else {
+          // Fade out 2.2 -> 2.5
+          const p = (timeSeconds - 2.2) / 0.3;
+          opacity = Math.max(0, 1 - p);
+          scale = 1.0 + 0.06 * p;
+          translateY = -25 * p;
+        }
+
+        scene1.style.opacity = opacity;
+        scene1.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+
+        // Staggered reveal inside scene 1
+        const t1 = clamp((timeSeconds - 0.2) / 0.4, 0, 1);
+        s1Name.style.letterSpacing = `${8 + 6 * easeOutCubic(t1)}px`;
+
+        const t2 = clamp((timeSeconds - 0.5) / 0.4, 0, 1);
+        s1Role.style.opacity = t2;
+        s1Role.style.transform = `translateY(${15 * (1 - easeOutCubic(t2))}px)`;
+
+        const t3 = clamp((timeSeconds - 0.8) / 0.4, 0, 1);
+        s1Pills.style.opacity = t3;
+        s1Pills.style.transform = `translateY(${15 * (1 - easeOutCubic(t3))}px)`;
+      } else {
+        scene1.style.opacity = 0;
+      }
+
+      // ==========================================
+      // SCENE 2: (2.5s -> 5.0s)
+      // ==========================================
+      if (timeSeconds >= 2.4 && timeSeconds < 5.1) {
+        let opacity = 0;
+        let scale = 0.95;
+        let translateY = 25;
+
+        if (timeSeconds < 2.8) {
+          const p = easeOutCubic((timeSeconds - 2.5) / 0.3);
+          opacity = p;
+          scale = 0.95 + 0.05 * p;
+          translateY = 25 * (1 - p);
+        } else if (timeSeconds <= 4.7) {
+          opacity = 1;
+          scale = 1.0;
+          translateY = 0;
+        } else {
+          const p = (timeSeconds - 4.7) / 0.3;
+          opacity = Math.max(0, 1 - p);
+          scale = 1.0 + 0.05 * p;
+          translateY = -20 * p;
+        }
+
+        scene2.style.opacity = opacity;
+        scene2.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+
+        // Stagger 3 cards
+        const p1 = clamp((timeSeconds - 2.7) / 0.4, 0, 1);
+        const p2 = clamp((timeSeconds - 2.9) / 0.4, 0, 1);
+        const p3 = clamp((timeSeconds - 3.1) / 0.4, 0, 1);
+
+        card1.style.transform = `translateY(${40 * (1 - easeOutBack(p1))}px) scale(${0.9 + 0.1 * p1})`;
+        card1.style.opacity = p1;
+
+        card2.style.transform = `translateY(${40 * (1 - easeOutBack(p2))}px) scale(${0.9 + 0.1 * p2})`;
+        card2.style.opacity = p2;
+
+        card3.style.transform = `translateY(${40 * (1 - easeOutBack(p3))}px) scale(${0.9 + 0.1 * p3})`;
+        card3.style.opacity = p3;
+      } else if (timeSeconds >= 5.1) {
+        scene2.style.opacity = 0;
+      }
+
+      // ==========================================
+      // SCENE 3: (5.0s -> 7.5s)
+      // ==========================================
+      if (timeSeconds >= 4.9 && timeSeconds < 7.6) {
+        let opacity = 0;
+        let scale = 0.95;
+        let translateY = 20;
+
+        if (timeSeconds < 5.3) {
+          const p = easeOutCubic((timeSeconds - 5.0) / 0.3);
+          opacity = p;
+          scale = 0.95 + 0.05 * p;
+          translateY = 20 * (1 - p);
+        } else if (timeSeconds <= 7.2) {
+          opacity = 1;
+          scale = 1.0;
+          translateY = 0;
+        } else {
+          const p = (timeSeconds - 7.2) / 0.3;
+          opacity = Math.max(0, 1 - p);
+          scale = 1.0 + 0.05 * p;
+          translateY = -25 * p;
+        }
+
+        scene3.style.opacity = opacity;
+        scene3.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+
+        // Animate Metrics
+        const mProgress = clamp((timeSeconds - 5.2) / 0.8, 0, 1);
+        const repoCount = Math.floor(easeOutCubic(mProgress) * 233);
+        document.getElementById('m1-val').innerText = `${repoCount}+`;
+
+        const tProgress = clamp((timeSeconds - 5.6) / 0.5, 0, 1);
+        s3Term.style.opacity = tProgress;
+        s3Term.style.transform = `translateY(${30 * (1 - easeOutCubic(tProgress))}px)`;
+      } else if (timeSeconds >= 7.6) {
+        scene3.style.opacity = 0;
+      }
+
+      // ==========================================
+      // SCENE 4: (7.5s -> 10.0s)
+      // ==========================================
+      if (timeSeconds >= 7.4) {
+        let opacity = 0;
+        let scale = 0.92;
+        let translateY = 25;
+
+        if (timeSeconds < 7.8) {
+          const p = easeOutCubic((timeSeconds - 7.5) / 0.3);
+          opacity = p;
+          scale = 0.92 + 0.08 * p;
+          translateY = 25 * (1 - p);
+        } else {
+          opacity = 1;
+          scale = 1.0;
+          translateY = 0;
+        }
+
+        scene4.style.opacity = opacity;
+        scene4.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+
+        // Typing animation for terminal prompt: "bhubbard --build-the-future"
+        const fullCmd = "bhubbard --build-the-future";
+        const typeProgress = clamp((timeSeconds - 8.0) / 1.2, 0, 1);
+        const charCount = Math.floor(typeProgress * fullCmd.length);
+        cliCmd.innerText = fullCmd.substring(0, charCount);
+
+        // Blinking cursor
+        cliCur.style.opacity = Math.floor(timeSeconds * 4) % 2 === 0 ? "1" : "0";
+
+        // Links fade up
+        const lProg = clamp((timeSeconds - 8.3) / 0.4, 0, 1);
+        s4Links.style.opacity = lProg;
+        s4Links.style.transform = `translateY(${15 * (1 - easeOutCubic(lProg))}px)`;
+      } else {
+        scene4.style.opacity = 0;
+      }
+    }
+
+    // Expose HyperFrames seek protocol interface
+    window.__hf = {
+      duration: 10.0,
+      fps: 30,
+      width: 1920,
+      height: 1080,
+      seek: function(timeSeconds) {
+        renderFrame(timeSeconds);
+      }
+    };
+
+    // Initial first frame render
+    renderFrame(0);
+  </script>
+</body>
+</html>
