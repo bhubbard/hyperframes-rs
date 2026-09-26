@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HyperFrames-rs — High-Performance Deterministic Web Video in Rust</title>
+  <meta name="description" content="A blazing-fast, frame-accurate native Rust engine for turning dynamic HTML5, Canvas, and WebGL compositions into broadcast-grade MP4, ProRes MOV, and WebM video.">
+  <meta name="theme-color" content="#08090d">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="HyperFrames-rs — Deterministic Web Video Rendering in Rust">
+  <meta property="og:description" content="Turn any dynamic HTML5, Canvas, WebGL, or SVG animation into frame-accurate, broadcast-quality 4K 60fps MP4, ProRes MOV, and WebM video via headless Chrome CDP and piped FFmpeg encoding.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bhubbard.github.io/hyperframes-rs/">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header>
+    <div class="container nav-inner">
+      <a href="#" class="logo">
+        <div class="logo-icon">H</div>
+        <span>hyperframes-rs</span>
+        <span class="logo-badge">RUST v0.2.0</span>
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#studio">Live Studio</a></li>
+          <li><a href="#generator">Generator</a></li>
+          <li><a href="#protocol">Protocol Spec</a></li>
+          <li><a href="#features">Subsystems</a></li>
+          <li><a href="#benchmarks">Benchmarks</a></li>
+          <li><a href="#quickstart">Quickstart</a></li>
+          <li>
+            <a href="https://crates.io/crates/hyperframes" target="_blank" rel="noopener noreferrer" class="nav-cta">
+              <span>crates.io</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/bhubbard/hyperframes-rs" target="_blank" rel="noopener noreferrer" class="nav-cta">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+              </svg>
+              <span>GitHub</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-pill">
+        <span>⚡ Rust 2024 Edition</span>
+        <span>•</span>
+        <span>Crates.io v0.2.0</span>
+        <span>•</span>
+        <span>Zero Frame Drops</span>
+      </div>
+      <h1>High-Performance Deterministic<br><span class="highlight">Web Video in Rust</span></h1>
+      <p>
+        Transform dynamic HTML5, Canvas, WebGL, or CSS animations into frame-accurate, broadcast-quality 4K 60fps MP4, ProRes MOV, and WebM sequences via headless Chrome CDP and zero-copy piped FFmpeg encoding.
+      </p>
+      <div class="hero-actions">
+        <a href="#studio" class="btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          <span>Launch Live Seek Studio</span>
+        </a>
+        <a href="#generator" class="btn-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/>
+          </svg>
+          <span>CLI & Code Configurator</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Live Seek Studio Section -->
+  <section id="studio" class="studio-section">
+    <div class="container">
+      <div class="studio-card">
+        
+        <!-- Header -->
+        <div class="studio-header">
+          <div class="studio-title">
+            <span class="live-dot"></span>
+            <span>Virtual Clock & Seek Protocol Simulation</span>
+          </div>
+          <div class="studio-badges">
+            <span class="badge badge-green">CDP Shimming: Active</span>
+            <span class="badge badge-cyan">Lossless Pipe</span>
+            <span class="badge">RGB24 / YUV420p</span>
+          </div>
+        </div>
+
+        <!-- Viewport -->
+        <div class="viewport-wrapper">
+          <canvas id="studioCanvas"></canvas>
+
+          <!-- Telemetry HUD Overlay -->
+          <div class="viewport-hud">
+            <div class="hud-panel">
+              <span class="hud-timecode" id="hudTimecode">00:00:00:00</span>
+              <div class="hud-row">
+                <span>TIMECODE</span>
+                <span class="hud-val">SMPTE</span>
+              </div>
+            </div>
+
+            <div class="hud-panel">
+              <div class="hud-row">
+                <span>FRAME:</span>
+                <span class="hud-val" id="hudFrame">0</span>
+              </div>
+              <div class="hud-row">
+                <span>TIME:</span>
+                <span class="hud-val" id="hudTime">0.000s</span>
+              </div>
+              <div class="hud-row">
+                <span>JITTER:</span>
+                <span class="hud-val" style="color: #10b981;">0.000ms</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Control Bar -->
+        <div class="studio-controls">
+          <div class="timeline-row">
+            <div class="timeline-scrubber">
+              <input type="range" id="timelineScrubber" min="0" max="5" step="0.001" value="0">
+            </div>
+          </div>
+
+          <div class="control-buttons-row">
+            <div class="btn-group">
+              <button class="ctrl-btn" id="jumpBackBtn" title="Jump -1s">⯬⯬ -1s</button>
+              <button class="ctrl-btn" id="stepBackBtn" title="Step -1 frame">⯬ -1f</button>
+              <button class="ctrl-btn active" id="playPauseBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                <span>Play</span>
+              </button>
+              <button class="ctrl-btn" id="stepFwdBtn" title="Step +1 frame">+1f ⯮</button>
+              <button class="ctrl-btn" id="jumpFwdBtn" title="Jump +1s">+1s ⯮⯮</button>
+            </div>
+
+            <div class="studio-select-group">
+              <label for="fpsSelect">FPS:</label>
+              <select id="fpsSelect" class="studio-select">
+                <option value="24">24 (Film)</option>
+                <option value="29.97">29.97 (NTSC)</option>
+                <option value="30" selected>30 (Standard)</option>
+                <option value="60">60 (High-Speed)</option>
+              </select>
+            </div>
+
+            <div class="studio-select-group">
+              <label for="colorPresetSelect">Color Grading:</label>
+              <select id="colorPresetSelect" class="studio-select">
+                <option value="neutral" selected>neutral</option>
+                <option value="warm-daylight">warm-daylight</option>
+                <option value="mono-clean">mono-clean</option>
+                <option value="vintage-wash">vintage-wash</option>
+                <option value="bright-pop">bright-pop</option>
+              </select>
+            </div>
+
+            <div class="studio-select-group" style="min-width: 170px;">
+              <label for="faderSlider">Fader:</label>
+              <input type="range" id="faderSlider" min="-100" max="100" value="0" style="width: 80px; accent-color: var(--accent-cyan);">
+              <span id="faderDbLabel" style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-cyan); width: 45px;">0.0 dB</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive CLI & Rust Code Generator -->
+  <section id="generator" class="generator-section">
+    <div class="container">
+      <div class="section-head">
+        <h2>Interactive Pipeline Configurator</h2>
+        <p>Generate production-ready terminal CLI commands and native async Rust Tokio code simultaneously.</p>
+      </div>
+
+      <div class="generator-grid">
+        <!-- Configuration Form -->
+        <div class="config-card">
+          <div class="config-row">
+            <div class="config-group">
+              <label for="inputSource">Source HTML / URL</label>
+              <input type="text" id="inputSource" class="config-input" value="index.html">
+            </div>
+            <div class="config-group">
+              <label for="outputDest">Output File</label>
+              <input type="text" id="outputDest" class="config-input" value="rendered_video.mp4">
+            </div>
+          </div>
+
+          <div class="config-row">
+            <div class="config-group">
+              <label for="presetRes">Resolution Preset</label>
+              <select id="presetRes" class="config-select">
+                <option value="1080p" selected>1920x1080 (Full HD 16:9)</option>
+                <option value="4k">3840x2160 (4K UHD)</option>
+                <option value="720p">1280x720 (HD)</option>
+                <option value="9:16">1080x1920 (Vertical Reel/Short)</option>
+                <option value="square">1080x1080 (Square 1:1)</option>
+              </select>
+            </div>
+            <div class="config-group">
+              <label for="genFps">Framerate (FPS)</label>
+              <select id="genFps" class="config-select">
+                <option value="24">24 fps (Cinema)</option>
+                <option value="29.97">29.97 fps (NTSC)</option>
+                <option value="30">30 fps (Web)</option>
+                <option value="60" selected>60 fps (Smooth)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="config-row">
+            <div class="config-group">
+              <label for="customWidth">Width (px)</label>
+              <input type="number" id="customWidth" class="config-input" value="1920">
+            </div>
+            <div class="config-group">
+              <label for="customHeight">Height (px)</label>
+              <input type="number" id="customHeight" class="config-input" value="1080">
+            </div>
+          </div>
+
+          <div class="config-row">
+            <div class="config-group">
+              <label for="genCodec">Codec Engine</label>
+              <select id="genCodec" class="config-select">
+                <option value="h264" selected>H.264 / AVC (Broadest Compatibility)</option>
+                <option value="h265">H.265 / HEVC (High Efficiency)</option>
+                <option value="prores">Apple ProRes 4444 (Mastering / Alpha)</option>
+                <option value="vp9">VP9 (Open WebM)</option>
+              </select>
+            </div>
+            <div class="config-group">
+              <label for="genCrf">Quality (CRF: <span id="crfVal">18</span>)</label>
+              <input type="range" id="genCrf" min="0" max="51" value="18" style="width: 100%; accent-color: var(--accent-cyan); margin-top: 0.5rem;">
+            </div>
+          </div>
+
+          <div class="config-group" style="display: flex; align-items: center; gap: 0.6rem; margin-top: 0.5rem;">
+            <input type="checkbox" id="genGpu" style="accent-color: var(--accent-cyan); width: 18px; height: 18px; cursor: pointer;">
+            <label for="genGpu" style="margin-bottom: 0; cursor: pointer; color: var(--text-main);">Enable Chrome Hardware GPU Acceleration</label>
+          </div>
+        </div>
+
+        <!-- Output Tabs -->
+        <div class="code-output-card">
+          <div class="tab-header">
+            <div class="tab-buttons">
+              <button class="tab-btn active" id="tabCli">CLI Command</button>
+              <button class="tab-btn" id="tabRust">Rust 2024 API</button>
+            </div>
+            <button class="copy-btn" id="copyCliBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              <span>Copy</span>
+            </button>
+            <button class="copy-btn" id="copyRustBtn" style="display: none;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              <span>Copy</span>
+            </button>
+          </div>
+
+          <pre class="code-block" id="cliCodeBlock"></pre>
+          <pre class="code-block" id="rustCodeBlock" style="display: none;"></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- The window.__hf Seek Protocol Section -->
+  <section id="protocol" style="padding: 4rem 0; border-top: 1px solid var(--border-subtle); background: rgba(10, 12, 18, 0.5);">
+    <div class="container">
+      <div class="section-head">
+        <h2>The <code>window.__hf</code> Deterministic Seek Protocol</h2>
+        <p>HyperFrames decouples render speed from realtime clock drift. Any HTML page exposing the seek protocol guarantees 100% frame reproduction.</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+        <div>
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--accent-cyan);">Authoring for HyperFrames</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.95rem;">
+            When HyperFrames renders an HTML document, it communicates over Chrome DevTools Protocol (CDP) to seek the page to exact timestamps:
+          </p>
+          <pre class="code-block">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta name="hyperframes:duration" content="5.0"&gt;
+  &lt;meta name="hyperframes:fps" content="30"&gt;
+  &lt;meta name="hyperframes:resolution" content="1920x1080"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div id="hero"&gt;Render me&lt;/div&gt;
+
+  &lt;script&gt;
+    window.__hf = {
+      duration: 5.0,
+      fps: 30,
+      seek: function(timeSeconds) {
+        // Synchronous frame-accurate update
+        const p = timeSeconds / 5.0;
+        document.getElementById('hero').style.transform =
+          `translateX(${p * 500}px) rotate(${p * 360}deg)`;
+      }
+    };
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+        </div>
+
+        <div>
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--accent-amber);">Automatic Virtual Clock Injection</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.95rem;">
+            If an HTML page does not expose <code>window.__hf</code>, HyperFrames automatically injects a deterministic virtual clock shim before the page scripts execute:
+          </p>
+          <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem;">
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.8rem; font-size: 0.9rem; color: var(--text-secondary);">
+              <li style="display: flex; gap: 0.6rem;">
+                <span style="color: var(--accent-cyan); font-weight: bold;">✓</span>
+                <span><strong><code>performance.now()</code> Interception:</strong> Advances strictly by <code>1 / fps</code> per step, eliminating OS thread scheduling jitter.</span>
+              </li>
+              <li style="display: flex; gap: 0.6rem;">
+                <span style="color: var(--accent-cyan); font-weight: bold;">✓</span>
+                <span><strong><code>requestAnimationFrame</code> Freezing:</strong> Queues and executes animation callbacks synchronously on each captured frame.</span>
+              </li>
+              <li style="display: flex; gap: 0.6rem;">
+                <span style="color: var(--accent-cyan); font-weight: bold;">✓</span>
+                <span><strong>Media Element Alignment:</strong> Locks <code>&lt;video&gt;</code> and <code>&lt;audio&gt;</code> element <code>currentTime</code> directly to the virtual transport clock.</span>
+              </li>
+              <li style="display: flex; gap: 0.6rem;">
+                <span style="color: var(--accent-cyan); font-weight: bold;">✓</span>
+                <span><strong>Stall Detection & Smoothing:</strong> Ported lag smoothing with 4.6s playback stall detection so complex WebGL shaders never hang the render pipeline.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Subsystems Grid -->
+  <section id="features" style="padding: 4rem 0;">
+    <div class="container">
+      <div class="section-head">
+        <h2>Native Rust Subsystems</h2>
+        <p>Engineered for mission-critical video rendering pipelines with 100% test parity.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">⏱</div>
+          <h3>Exact Rational FPS</h3>
+          <p>Full support for non-integer frame rates via exact rational arithmetic (<code>Fps { num: 30000, den: 1001 }</code> for 29.97 NTSC and 59.94) with <code>[1, 240]</code> bounds validation.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🛡</div>
+          <h3>Hardened Safe Path Containment</h3>
+          <p>Security guard ensuring all relative assets, textures, and output locations remain strictly bounded inside allowed project roots, preventing directory traversal and symlink escapes.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🎚</div>
+          <h3>Audio Gain & Fade Envelopes</h3>
+          <p>Logarithmic mixer fader coordinates (<code>[-100, +100]</code> $\leftrightarrow$ <code>[-60dB, +12dB]</code>) with linear fade-in / fade-out curve clamping and parametric audio automation lanes.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <h3>Color Grading & VFX Chains</h3>
+          <p>Built-in broadcast LUT presets (<code>neutral</code>, <code>warm-daylight</code>, <code>mono-clean</code>, <code>vintage-wash</code>, <code>bright-pop</code>) with customizable shader capture chains and vignette effects.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">📐</div>
+          <h3>Even Dimension Padding</h3>
+          <p>Automatic detection and padding filter generation for 4:2:0 subsampled formats (<code>yuv420p</code>) to prevent FFmpeg chroma misalignment errors on arbitrary canvas resolutions.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <h3>Fast FFprobe & Alpha Detection</h3>
+          <p>Instant media stream interrogation with exact upstream regex evaluation for transparent alpha channel formats (<code>yuva</code>, <code>rgba</code>, <code>bgra</code>, <code>ya8</code>).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Performance & Benchmarks Table -->
+  <section id="benchmarks" style="padding: 4rem 0; background: rgba(10, 12, 18, 0.5); border-top: 1px solid var(--border-subtle);">
+    <div class="container">
+      <div class="section-head">
+        <h2>Engine Architecture & Benchmarks</h2>
+        <p>Comparing the native Rust 2024 HyperFrames engine against upstream Node.js Puppeteer.</p>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Metric / Feature</th>
+              <th>hyperframes-rs (Native Rust)</th>
+              <th>Upstream Node.js Engine</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Runtime Footprint</strong></td>
+              <td class="cell-highlight">~15 MB RSS (Single Static Binary)</td>
+              <td>~180 MB RSS + Node runtime</td>
+            </tr>
+            <tr>
+              <td><strong>CDP Frame Ingestion</strong></td>
+              <td class="cell-highlight">Zero-Copy In-Memory Piped Stream</td>
+              <td>File buffer serialization / Node stream</td>
+            </tr>
+            <tr>
+              <td><strong>Clock Determinism</strong></td>
+              <td class="cell-highlight">Lag-smoothed monotonic clock shim</td>
+              <td>Browser loop dependent</td>
+            </tr>
+            <tr>
+              <td><strong>Test Suite Coverage</strong></td>
+              <td class="cell-highlight">50 Passing Tests (Unit + Integration)</td>
+              <td>TypeScript Vitest suite</td>
+            </tr>
+            <tr>
+              <td><strong>Memory Safety</strong></td>
+              <td class="cell-highlight">100% Safe Rust 2024 Edition</td>
+              <td>V8 Garbage Collected</td>
+            </tr>
+            <tr>
+              <td><strong>Installation</strong></td>
+              <td class="cell-highlight"><code>cargo install hyperframes</code></td>
+              <td><code>npm install -g @hyperframes/cli</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quickstart Guide -->
+  <section id="quickstart" class="container">
+    <div class="quickstart-box">
+      <h2>Ready to Render Broadcast Web Video?</h2>
+      <p>Install the standalone CLI or embed HyperFrames directly into your Rust video production server.</p>
+      
+      <div class="install-bar">
+        <span style="color: var(--text-muted);">$</span>
+        <span>cargo install hyperframes</span>
+      </div>
+
+      <div style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+        <a href="https://crates.io/crates/hyperframes" target="_blank" rel="noopener noreferrer" class="btn-primary">
+          <span>View on Crates.io</span>
+        </a>
+        <a href="https://github.com/bhubbard/hyperframes-rs" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+          <span>Explore Source on GitHub</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <ul class="footer-links">
+        <li><a href="https://github.com/bhubbard/hyperframes-rs">GitHub</a></li>
+        <li><a href="https://crates.io/crates/hyperframes">Crates.io</a></li>
+        <li><a href="https://github.com/bhubbard/hyperframes">Upstream Fork</a></li>
+        <li><a href="https://github.com/bhubbard/hyperframes-rs/blob/main/LICENSE">Apache 2.0 License</a></li>
+      </ul>
+      <p>© 2026 Brandon Hubbard. Built with high-performance Rust 2024.</p>
+    </div>
+  </footer>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">Copied to clipboard!</div>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>

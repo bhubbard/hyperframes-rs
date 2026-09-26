@@ -1,11 +1,14 @@
 # ⚡ HyperFrames Rust (`hyperframes`)
 
 [![Crates.io](https://img.shields.io/crates/v/hyperframes.svg)](https://crates.io/crates/hyperframes)
+[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue.svg)](https://bhubbard.github.io/hyperframes-rs/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Rust](https://img.shields.io/badge/rust-2024%20edition-orange.svg)](Cargo.toml)
 [![CI](https://github.com/bhubbard/hyperframes-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/bhubbard/hyperframes-rs/actions)
 
 > High-performance native Rust programmatic video rendering engine with seekable HTML/CSS/JS clock protocol.
+>
+> 🌐 **Interactive Documentation & Live Seek Studio**: [bhubbard.github.io/hyperframes-rs](https://bhubbard.github.io/hyperframes-rs/)
 
 A native Rust port and engine inspired by [HeyGen HyperFrames](https://github.com/heygen-com/hyperframes). HyperFrames turns any web page (HTML, CSS, SVG, Canvas, WebGL, GSAP, Three.js, Lottie) into frame-accurate, production-quality video without frame skips, clock drift, or wall-clock dependence.
 
@@ -32,7 +35,7 @@ cargo install hyperframes
 ### In Your `Cargo.toml`
 ```toml
 [dependencies]
-hyperframes = "0.1.0"
+hyperframes = "0.2.0"
 ```
 
 ---
