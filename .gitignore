@@ -1,0 +1,20 @@
+# Rust build artifacts
+target/
+**/*.rs.bk
+*.pdb
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Output videos and temporary artifacts
+*.mp4
+*.mov
+*.webm
+*.gif
+/output/
+/temp/
+
+# Environment
+.env
+.env.local

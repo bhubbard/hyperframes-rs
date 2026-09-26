@@ -1,0 +1,40 @@
+[package]
+name = "hyperframes"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+description = "High-performance native Rust programmatic video engine with seekable HTML/CSS/JS clock protocol"
+authors = ["Brandon Hubbard <bhubbard@gmail.com>"]
+license = "Apache-2.0"
+repository = "https://github.com/bhubbard/hyperframes-rs"
+homepage = "https://github.com/bhubbard/hyperframes-rs"
+documentation = "https://docs.rs/hyperframes"
+readme = "README.md"
+keywords = ["video", "animation", "headless-chrome", "ffmpeg", "renderer"]
+categories = ["multimedia::video", "command-line-utilities", "web-programming"]
+
+[dependencies]
+chromiumoxide = { version = "0.9.1" }
+tokio = { version = "1.43", features = ["macros", "rt-multi-thread", "process", "io-util", "fs", "time"] }
+futures = "0.3"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+clap = { version = "4.5", features = ["derive", "env"] }
+indicatif = { version = "0.17", features = ["tokio"] }
+anyhow = "1.0"
+thiserror = "2.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tempfile = "3.17"
+image = { version = "0.25", default-features = false, features = ["png", "jpeg"] }
+regex = "1.11"
+base64 = "0.22"
+url = "2.5"
+
+[[bin]]
+name = "hyperframes"
+path = "src/main.rs"
+
+[lib]
+name = "hyperframes"
+path = "src/lib.rs"

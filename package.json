@@ -1,0 +1,26 @@
+{
+  "name": "hyperframes-rs",
+  "version": "0.1.0",
+  "description": "High-performance native Rust programmatic video engine with seekable HTML/CSS/JS clock protocol",
+  "bin": {
+    "hyperframes": "./bin/hyperframes.js"
+  },
+  "scripts": {
+    "build": "cargo build --release"
+  },
+  "keywords": [
+    "hyperframes",
+    "video",
+    "programmatic-video",
+    "canvas",
+    "animation",
+    "ffmpeg",
+    "rust"
+  ],
+  "author": "Brandon Hubbard <bhubbard@gmail.com>",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bhubbard/hyperframes-rs.git"
+  }
+}

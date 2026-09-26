@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="hyperframes:duration" content="5.0">
+    <meta name="hyperframes:fps" content="30">
+    <meta name="hyperframes:resolution" content="1920x1080">
+    <title>HyperFrames Animation</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #0d1117;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        .container {
+            text-align: center;
+        }
+        .title {
+            color: #58a6ff;
+            font-size: 72px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+            transform: scale(0.8);
+            opacity: 0;
+        }
+        .badge {
+            display: inline-block;
+            background: #238636;
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 600;
+            padding: 8px 24px;
+            border-radius: 9999px;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="title" class="title">⚡ HyperFrames Rust</div>
+        <div id="badge" class="badge">Frame-Accurate Video</div>
+    </div>
+
+    <script>
+        // Native window.__hf Seek Protocol implementation
+        window.__hf = {
+            duration: 5.0,
+            fps: 30,
+            width: 1920,
+            height: 1080,
+            seek: function(timeSeconds) {
+                const title = document.getElementById('title');
+                const badge = document.getElementById('badge');
+
+                // Animate title from 0.0s to 1.5s
+                const pTitle = Math.min(1.0, Math.max(0.0, timeSeconds / 1.5));
+                title.style.opacity = pTitle;
+                title.style.transform = `scale(${0.8 + 0.2 * pTitle})`;
+
+                // Animate badge from 1.0s to 2.5s
+                const pBadge = Math.min(1.0, Math.max(0.0, (timeSeconds - 1.0) / 1.5));
+                badge.style.opacity = pBadge;
+                badge.style.transform = `translateY(${20 * (1.0 - pBadge)}px)`;
+            }
+        };
+    </script>
+</body>
+</html>
