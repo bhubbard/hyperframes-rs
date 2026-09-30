@@ -14,6 +14,14 @@ pub struct CaptureSession {
     protocol: HfProtocol,
 }
 
+impl std::fmt::Debug for CaptureSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("CaptureSession")
+            .field("protocol", &self.protocol)
+            .finish()
+    }
+}
+
 impl CaptureSession {
     /// Initialize a new capture session by navigating to the composition URL.
     pub async fn new(page: Page, url: &str, default_proto: HfProtocol) -> Result<Self> {

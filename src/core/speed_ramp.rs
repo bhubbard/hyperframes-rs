@@ -48,7 +48,7 @@ impl RateTable {
         let mut ss = vec![0.0];
 
         let push = |t: f64, ts: &mut Vec<f64>, ss: &mut Vec<f64>| {
-            let prev_t = *ts.last().unwrap();
+            let prev_t = ts.last().copied().unwrap_or(0.0);
             if t <= prev_t {
                 return;
             }
@@ -56,7 +56,7 @@ impl RateTable {
             let curr_rate = sample_automation_lane(lane, t, InterpolationScale::Log);
             let dt = t - prev_t;
             let avg_rate = (prev_rate + curr_rate) / 2.0;
-            let prev_s = *ss.last().unwrap();
+            let prev_s = ss.last().copied().unwrap_or(0.0);
             ts.push(t);
             ss.push(prev_s + avg_rate * dt);
         };

@@ -38,6 +38,7 @@ pub struct TransportClock {
     epoch: Instant,
 }
 
+
 impl Default for TransportClock {
     fn default() -> Self {
         Self::new(0.0, 1.0, f64::INFINITY)
@@ -132,7 +133,10 @@ impl TransportClock {
 
         // Monotonic fallback with stall smoothing
         self.apply_stall_correction();
-        let start_ms = self.play_start_ms.unwrap();
+        let start_ms = match self.play_start_ms {
+            Some(ms) => ms,
+            None => return self.base_time,
+        };
         let elapsed = (self.now_ms() - start_ms) / 1000.0;
         let t = self.base_time + elapsed * self.rate;
 

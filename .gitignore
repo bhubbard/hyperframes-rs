@@ -18,3 +18,5 @@ Thumbs.db
 # Environment
 .env
 .env.local
+coverage_report
+target/coverage

@@ -1,6 +1,25 @@
 use super::protocol::HfProtocol;
 use regex::Regex;
 use std::path::Path;
+use std::sync::LazyLock;
+
+static META_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(
+        r#"(?i)<meta\s+[^>]*name=["']hyperframes:([a-zA-Z0-9_\-]+)["'][^>]*content=["']([^"']+)["'][^>]*>"#,
+    )
+    .unwrap()
+});
+
+static META_RE_REV: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(
+        r#"(?i)<meta\s+[^>]*content=["']([^"']+)["'][^>]*name=["']hyperframes:([a-zA-Z0-9_\-]+)["'][^>]*>"#,
+    )
+    .unwrap()
+});
+
+static TITLE_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r#"(?i)<title>(.*?)</title>"#).unwrap()
+});
 
 /// Metadata extracted statically from an HTML composition document.
 #[derive(Debug, Clone, Default)]
@@ -15,17 +34,6 @@ pub struct CompositionMeta {
 /// Parse HTML text for `<meta name="hyperframes:..." content="...">` tags.
 pub fn parse_html_metadata(html: &str) -> CompositionMeta {
     let mut meta = CompositionMeta::default();
-
-    // Regex for meta tags
-    let meta_re = Regex::new(
-        r#"(?i)<meta\s+[^>]*name=["']hyperframes:([a-zA-Z0-9_\-]+)["'][^>]*content=["']([^"']+)["'][^>]*>"#,
-    )
-    .unwrap();
-    // Also reverse order content then name
-    let meta_re_rev = Regex::new(
-        r#"(?i)<meta\s+[^>]*content=["']([^"']+)["'][^>]*name=["']hyperframes:([a-zA-Z0-9_\-]+)["'][^>]*>"#,
-    )
-    .unwrap();
 
     let mut apply = |key: &str, val: &str| match key.to_lowercase().as_str() {
         "duration" => {
@@ -60,21 +68,20 @@ pub fn parse_html_metadata(html: &str) -> CompositionMeta {
         _ => {}
     };
 
-    for cap in meta_re.captures_iter(html) {
+    for cap in META_RE.captures_iter(html) {
         if let (Some(k), Some(v)) = (cap.get(1), cap.get(2)) {
             apply(k.as_str(), v.as_str());
         }
     }
 
-    for cap in meta_re_rev.captures_iter(html) {
+    for cap in META_RE_REV.captures_iter(html) {
         if let (Some(v), Some(k)) = (cap.get(1), cap.get(2)) {
             apply(k.as_str(), v.as_str());
         }
     }
 
     // Extract <title>
-    let title_re = Regex::new(r#"(?i)<title>(.*?)</title>"#).unwrap();
-    if let Some(cap) = title_re.captures(html) {
+    if let Some(cap) = TITLE_RE.captures(html) {
         if let Some(t) = cap.get(1) {
             meta.title = Some(t.as_str().trim().to_string());
         }
